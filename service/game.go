@@ -31,6 +31,7 @@ func NewGame() (*Game) {
 type Game struct {
 	Player        map[int]int //玩家数量如果玩家的个人信息加载，可以用LIST或者SLICE的数据结构
 	currentPlayer int         //当前玩家
+	currentLocation [2]int    //当前棋子的位置
 	Martrix       [][]int     //保存棋盘信息
 	row           int         //棋盘行数
 	col           int         //棋盘列数
@@ -149,6 +150,12 @@ func (g *Game) StartRandomFillMartrixGame() {
 			continue
 		}
 		g.filMartrix(r)
+
+		if g.isWin() {
+
+            fmt.Printf("祝贺玩家%d 赢得了比赛\n",g.currentPlayer)
+			break
+		}
 		g.swapPlayer()
 
 		if g.total == g.count {
@@ -182,9 +189,18 @@ func (g *Game) filMartrix(row int) {
 			continue
 		}
 		g.PushChessmen(row, k, g.Player[g.currentPlayer])
+		g.setCurrentLocation(row,k)
 		break
 
 	}
+}
+
+/**
+ *设置当前棋子的位置
+ */
+func (g *Game) setCurrentLocation(row, col int) {
+	 g.currentLocation[0] = row
+	 g.currentLocation[1] = col
 }
 
 /**
@@ -196,5 +212,23 @@ func (g *Game) swapPlayer() {
 		return
 	}
 	g.currentPlayer = 1
+
+}
+
+/**
+ *判断当前是不是已经胜出
+ */
+func (g *Game) isWin()(bool) {
+
+	if g.count < 8 {
+		return false
+	}
+
+	//从当前位置横向检测
+	//从当前位置纵向检测
+	//从当前位置斜上方检测
+	//从当前位置斜下方检测
+
+	return true
 
 }
