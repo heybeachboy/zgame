@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 	"golang.org/x/exp/rand"
-	)
+)
 
 const (
 	EMPTY     = iota //表示棋盘位置为空
@@ -29,14 +29,14 @@ func NewGame() (*Game) {
 }
 
 type Game struct {
-	Player        map[int]int //玩家数量如果玩家的个人信息加载，可以用LIST或者SLICE的数据结构
-	currentPlayer int         //当前玩家
-	currentLocation [2]int    //当前棋子的位置
-	Martrix       [][]int     //保存棋盘信息
-	row           int         //棋盘行数
-	col           int         //棋盘列数
-	count         int         //统计棋盘使用了的数量
-	total         int         //棋盘总共的位置
+	Player          map[int]int //玩家数量如果玩家的个人信息加载，可以用LIST或者SLICE的数据结构
+	currentPlayer   int         //当前玩家
+	currentLocation [2]int      //当前棋子的位置
+	Martrix         [][]int     //保存棋盘信息
+	row             int         //棋盘行数
+	col             int         //棋盘列数
+	count           int         //统计棋盘使用了的数量
+	total           int         //棋盘总共的位置
 }
 
 func (g *Game) Init() { //该位置都是用常量配置，为了简便就不做传参处理
@@ -153,7 +153,7 @@ func (g *Game) StartRandomFillMartrixGame() {
 
 		if g.isWin() {
 
-            fmt.Printf("祝贺玩家%d 赢得了比赛\n",g.currentPlayer)
+			fmt.Printf("祝贺玩家%d 赢得了比赛 %d,%d\n", g.currentPlayer,g.currentLocation[0],g.currentLocation[1])
 			break
 		}
 		g.swapPlayer()
@@ -189,7 +189,7 @@ func (g *Game) filMartrix(row int) {
 			continue
 		}
 		g.PushChessmen(row, k, g.Player[g.currentPlayer])
-		g.setCurrentLocation(row,k)
+		g.setCurrentLocation(row, k)
 		break
 
 	}
@@ -199,8 +199,8 @@ func (g *Game) filMartrix(row int) {
  *设置当前棋子的位置
  */
 func (g *Game) setCurrentLocation(row, col int) {
-	 g.currentLocation[0] = row
-	 g.currentLocation[1] = col
+	g.currentLocation[0] = row
+	g.currentLocation[1] = col
 }
 
 /**
@@ -218,17 +218,60 @@ func (g *Game) swapPlayer() {
 /**
  *判断当前是不是已经胜出
  */
-func (g *Game) isWin()(bool) {
+func (g *Game) isWin() (bool) {
 
 	if g.count < 8 {
 		return false
 	}
-
+	direct := [4][2][2]int{{{0, 1}, {0, -1}}, {{1, 0}, {-1, 0}}, {{-1, 1}, {1, -1}}, {{1, 1}, {-1, -1}}}
 	//从当前位置横向检测
 	//从当前位置纵向检测
 	//从当前位置斜上方检测
 	//从当前位置斜下方检测
 
-	return true
+	for i := 0; i < 4; i++ {
+		d := direct[i]
+		num := g.countChessmen(d)
+		if num >= 4 {
+			return true
+		}
+	}
+
+	//从当前位置纵向检测
+	//从当前位置斜上方检测
+	//从当前位置斜下方检测
+
+	return false
+
+}
+
+func (g *Game) countChessmen(data [2][2]int) (int) {
+	count := 1
+	node1 := g.currentLocation
+	node2 := g.currentLocation
+	for i := 0; i < 3; i++ {
+		node1[0] = node1[0] + data[0][0]
+		node1[1] = node1[1] + data[0][1]
+
+		if !g.isIllegal(node1[0],node1[1]) {
+			break
+		}
+		if g.Martrix[node1[0]][node1[1]] != g.Martrix[g.currentLocation[0]][g.currentLocation[1]] {
+			break
+		}
+		count++
+	}
+	for i := 0; i < 3; i++ {
+		node2[0] = node2[0] + data[1][0]
+		node2[1] = node2[1] + data[1][1]
+		if !g.isIllegal(node2[0],node2[1]) {
+			break
+		}
+		if g.Martrix[node2[0]][node2[1]] != g.Martrix[g.currentLocation[0]][g.currentLocation[1]] {
+			break
+		}
+		count++
+	}
+	return count
 
 }
