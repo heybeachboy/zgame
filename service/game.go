@@ -244,7 +244,9 @@ func (g *Game) isWin() (bool) {
 	return false
 
 }
-
+/**
+ *从各个方向搜索相同棋子的数量
+ */
 func (g *Game) countChessmen(data [2][2]int) (int) {
 	count := 1
 	node1 := g.currentLocation
