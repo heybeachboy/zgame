@@ -152,13 +152,13 @@ func (g *Game) StartRandomFillMartrixGame() {
 		g.filMartrix(r)
 
 		if g.isWin() {
-
 			fmt.Printf("祝贺玩家%d 赢得了比赛 %d,%d\n", g.currentPlayer,g.currentLocation[0],g.currentLocation[1])
 			break
 		}
 		g.swapPlayer()
 
 		if g.total == g.count {
+			fmt.Println("结果平局")
 			break
 		}
 
@@ -258,15 +258,23 @@ func (g *Game) countChessmen(data [2][2]int) (int) {
 		if !g.isIllegal(node1[0],node1[1]) {
 			break
 		}
+
+		if g.Martrix[node1[0]][node1[1]] == 0 {
+			break
+		}
 		if g.Martrix[node1[0]][node1[1]] != g.Martrix[g.currentLocation[0]][g.currentLocation[1]] {
 			break
 		}
 		count++
 	}
+
 	for i := 0; i < 3; i++ {
 		node2[0] = node2[0] + data[1][0]
 		node2[1] = node2[1] + data[1][1]
 		if !g.isIllegal(node2[0],node2[1]) {
+			break
+		}
+		if g.Martrix[node2[0]][node2[1]] == 0 {
 			break
 		}
 		if g.Martrix[node2[0]][node2[1]] != g.Martrix[g.currentLocation[0]][g.currentLocation[1]] {
